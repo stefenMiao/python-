@@ -1,0 +1,59 @@
+表格型的数据结构，既有行索引也有列索引
+
+参数
+data：一组数据（ndarray，dict，map，series等类型）
+index：行标（行索引）
+colums：列标（列索引）
+dtype：数据类型
+copy：是否拷贝数据
+
+创建
+frame=pd.DataFrame(index=["one","two","three","four"],data={"year":[1,2,3,4],"state":["b","c","a","v"]})
+         year state
+one       1     b
+two       2     c
+three     3     a
+four      4     v
+若只传入数据，dataframe会自动加上行索引且全部列标会被有序排列
+若在colums指定列索引，则会按照colums所指定的排序，若传入的列在数据中找不到，则会产生缺失值
+
+------对列操作-------
+获取列数据
+frame[colum-name] frame.colum-name
+自动加上原来的行索引，返回series
+frame["year"]  or  frame.year
+one      1
+two      2
+three    3
+four     4
+Name: year, dtype: int64
+
+修改列数据
+通过赋值的方式进行修改
+frame[colum-name]=data
+1.data为单个值时，整个列都赋为该值
+2.data为series时，匹配dataframe的索引，空位补上缺失值（若为列表则个数必须匹配）
+  frame["add"]=pd.Series(data=[10,20],index=["two","four"])
+         year state   add
+  one       1     b   NaN
+  two       2     c  10.0
+  three     3     a   NaN
+  four      4     v  20.0
+
+删除列
+del frame[colum-name]不会产生副本，直接作用在原始数据上（可以使用copy产生副本）
+--------------------
+
+转置（交换行与列）
+frame.T
+
+复制
+frame.copy() 
+deep参数-- True 副本改变不会改变原始数据
+       -- False副本改变会改变原始数据 
+
+head方法
+frame.head（）--选取该frame的前五行
+
+
+
