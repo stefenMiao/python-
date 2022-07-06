@@ -1,0 +1,204 @@
+---------重新索引reindex---------
+创建新的对象，使它的数据符合新的索引，原始索引存在则保留，不存在则产生缺失值
+  obj=pd.Series([1,4,5,3],index=["a","b","c","d"])
+  a    1
+  b    4
+  c    5
+  d    3
+  obj.reindex(["b","d","f"]) 
+  b    4.0
+  d    3.0
+  f    NaN
+
+ffill方法
+forward fill 向前填充
+  obj=pd.Series(["a","b","c"],index=[0,2,4])
+  0    a
+  2    b
+  4    c
+  obj.reindex(range(6),method="ffill") #ffill要加引号
+  0    a
+  1    a
+  2    b
+  3    b
+  4    c
+  5    c
+
+dataframe.reindex
+可以修改行索引或者列索引
+行索引
+         year state
+  one       1     b
+  two       2     c
+  three     3     a
+  four      4     v
+  frame.reindex(["two","one"])
+       year state
+  two     2     c
+  one     1     b
+列索引
+  frame.reindex(columns=["state","year","add"])
+        state  year  add
+  one       b     1  NaN
+  two       c     2  NaN
+  three     a     3  NaN
+  four      v     4  NaN
+  
+
+---------丢弃指定轴上的项---------
+drop方法
+返回在指定轴删除了特定值的新对象（产生副本）
+Series：
+  obj
+  0    a
+  2    b
+  4    c
+  obj.drop(0) 
+  2    b
+  4    c
+  
+Dataframe：
+          year state
+  one       1     b
+  two       2     c
+  three     3     a
+  four      4     v
+默认从行标签删除（axis=0）
+  frame.drop("one")
+         year state
+  two       2     c
+  three     3     a
+  four      4     v
+从列标签中删除（axis=1）
+  frame.drop("year",axis=1)
+        state
+  one       b
+  two       c
+  three     a
+  four      v
+ 
+ 
+inpalce参数
+true时就地修改对象，不返回新的对象
+
+
+
+
+---------索引，选取和过滤---------
+Series索引
+obj
+a    0
+b    1
+c    2
+d    3
+obj[2]-> 2
+obj["a"]-> 0
+obj[2:4]-> c    2
+           d    3
+obj["b":"d"]-> b    1 #当用标签切片时包含末端
+               c    2
+               d    3
+可以在切片时进行赋值 obj["b":"d"]=5
+
+
+dataframe索引
+用一个值或序列对dataframe进行索引其实是获得一个或多个列
+         year state
+  one       1     b
+  two       2     c
+  three     3     a
+  four      4     v
+  frame["year"]
+  one      1
+  two      2
+  three    3
+  four     4
+可以使用数字编号进行切片，但不能通过数字序号直接索引
+frame[0] Error
+frame[0:2] Fine
+
+
+loc和iloc进行选取
+loc:轴标签 iloc:整数索引
+     one  two  three  four
+  a    0    1      2     3
+  b    4    5      6     7
+  c    8    9     10    11
+  d   12   13     14    15
+
+  frame.loc["a",["two","three"]] #注意是中括号，不是圆括号
+  two      1
+  three    2
+
+  frame.iloc[1,[2,3]]
+  three    6
+  four     7
+
+  frame.iloc[[1,2],[2,3]]
+     three  four
+  b      6     7
+  c     10    11
+
+适用于一个或多个标签切片
+  frame.loc["a":,["two","three"]]
+     two  three
+  a    1      2
+  b    5      6
+  c    9     10
+  d   13     14
+
+
+整数索引
+若使用整数索引，为了防止歧义，则需加上iloc（防止标签也是整数的情况）
+
+
+算术运算和数据对齐
+pandas对不同的索引对象进行算术运算
+  s1
+  a    1
+  b    2
+  d    3
+  e    5
+  s2
+  a    4
+  b    7
+  c    8
+  d    1
+  f    2
+  s1+s2
+  a    5.0
+  b    9.0
+  c    NaN
+  d    4.0
+  e    NaN
+  f    NaN
+自动数据对齐在不重叠的索引处加入了缺失值，缺失值会在运算过程中传播
+
+对于dataframe，算数运算后行和列为原来的并集
+df1
+       b   d   e
+utah   0   1   2
+ohio   3   4   5
+texas  6   7   8
+color  9  10  11
+df1
+       b  c  d
+utah   0  1  2
+ohio   3  4  5
+texas  6  7  8
+df2+df1
+          b   c     d   e
+color   NaN NaN   NaN NaN
+ohio    6.0 NaN   9.0 NaN
+texas  12.0 NaN  15.0 NaN
+utah    0.0 NaN   3.0 NaN
+
+
+算数方法中填充值
+进行算数运算时，
+
+
+
+
+
+
