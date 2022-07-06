@@ -75,6 +75,15 @@ array([[1, 'b'],
        [4, 'v']], dtype=object)
        
 ---------索引对象----------
+负责管理轴标签与其他元数据（轴名称等）
+构建Series或dataframe时，所用的任何数组或其他序列的标签会转换成index
+obj=pd.Series([1,4,5,3],index=["a","b","c","d"])
+obj.index
+Index(['a', 'b', 'c', 'd'], dtype='object')
+index对象是不可变的，不能对其修改赋值
+
+
+
 
 
 
