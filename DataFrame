@@ -81,7 +81,8 @@ obj=pd.Series([1,4,5,3],index=["a","b","c","d"])
 obj.index
 Index(['a', 'b', 'c', 'd'], dtype='object')
 index对象是不可变的，不能对其修改赋值
-
+index对象可以包含重复标签
+index=pd.Index([1,1,22,3])
 
 
 
