@@ -394,8 +394,7 @@ frame.sort_values(by='b')
 0  0  4
 1  1  7
 
-frame.sort_values(by=['b','a'])  #当传入多个列时
-
+frame.sort_values(by=['b','a'])  #当传入多个列时，按照顺序依次完成排序
    a  b
 2  0 -3
 3  1  2
