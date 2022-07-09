@@ -3,6 +3,11 @@
 2.加载数据库中的数据
 3.利用Web API操作网络资源
 
+
+csv文件
+逗号分隔值（Comma-Separated Values，CSV），其文件以纯文本形式存储表格数据（数字和文本），文件的每一行都是一个数据记录。每个记录由一个或多个字段组成，用逗号分隔
+
+
 常用函数
 read_csv 从文件，URL，文件型对象中加载带分隔符的数据，默认分隔符为逗号
 read_table 从文件，URL，文件型对象中加载带分隔符的数据，默认分隔符为制表符
@@ -60,10 +65,118 @@ world  5   6   7   8
 foo    9  10  11  12
 
 层次化索引
-传入
-层次化索引由列
+传入由列编号组成的列表即可
+key1,key2,v1,v2
+one,a,1,2
+one,b,3,4
+one,c,5,6
+one,d,7,8
+two,a,9,10
+two,b,11,12
+two,c,13,14
+two,d,15,16
+
+pd.read_csv('ex1.csv',index_col=['key1','key2'])
+           v1  v2
+key1 key2        
+one  a      1   2
+     b      3   4
+     c      5   6
+     d      7   8
+two  a      9  10
+     b     11  12
+     c     13  14
+     d     15  16
 
 
+处理非固定分隔符的文件
+使用正则表达式
+\f -> 匹配一个换页
+\n -> 匹配一个换行符
+\r -> 匹配一个回车符
+\t -> 匹配一个制表符
+\v -> 匹配一个垂直制表符
+\s -> 匹配任何空白字符，包括空格、制表符、换页符等等, 等价于[ \f\n\r\t\v]
+\s+ 匹配任意多个上面的字符
+
+pd.read_csv('ex1.csv',sep='\s+')
+
+
+skiprows参数
+跳过文件的某几行
+
+
+缺失值处理
+缺失数据经常要么没有，要么用某个标记值表示，默认情况下用NA及NULL
+something,a,b,c,d,message
+one,1,2,3,4,NA
+two,5,6,,8,world
+three,9,10,11,12,foo
+
+pd.read_csv('ex1.csv')
+  something  a   b     c   d message
+0       one  1   2   3.0   4     NaN
+1       two  5   6   NaN   8   world
+2     three  9  10  11.0  12     foo
+
+na_values参数
+可以用一个列表或集合字符串表示缺失值
+字典各列也可以使用不同的NA标记值
+pd.read_csv('ex1.csv',na_values={'something':['one'],'message':'foo'})
+  something  a   b     c    d message
+0       NaN  1   2   3.0  4.0     NaN
+1       two  5   6   NaN  8.0   world
+2     three  9  10  11.0  NaN     NaN
+
+
+逐块读取文本文件
+只想读取几行，而不是整个文件，通过nrows指定
+pd.read_csv('ex.csv',nrows=5)  #读取前五行
+逐块读取整个文件，可以指定chunksize（行数）
+chunker=pd.read_csv('ex.csv',chunksize=1000)
+可以对文件进行逐块迭代
+for piece in chunker:
+   todo
+
+
+将数据写出到文本格式
+to_csv方法
+data=pd.read_csv('ex1.csv') #读取ex1.csv到data中 
+data.to_csv('out.csv')  #将data中的数据写入到out.csv中
+data
+  something  a   b     c    d message
+0       one  1   2   3.0  4.0     NaN
+1       two  5   6   NaN  8.0   world
+2     three  9  10  11.0  NaN     foo
+
+!cat out.csv
+,something,a,b,c,d,message
+0,one,1,2,3.0,4.0,
+1,two,5,6,,8.0,world
+2,three,9,10,11.0,,foo
+
+缺失值在写入的文件中会被表示为空字符串，使用na_rep参数指定空字符串替换为其他值
+data.to_csv(sys.stdout,na_rep='NULL')  #直接写入到sys.stdout中，仅仅打印出文本结果
+,something,a,b,c,d,message
+0,one,1,2,3.0,4.0,NULL
+1,two,5,6,NULL,8.0,world
+2,three,9,10,11.0,NULL,foo
+
+写入数据时，默认写入行和列的标签，可以设置index和header参数不写入
+data.to_csv(sys.stdout,index=False,header=False)
+one,1,2,3.0,4.0,
+two,5,6,,8.0,world
+three,9,10,11.0,,foo
+
+也可以写入指定列，使用columns参数
+data.to_csv(sys.stdout,columns=['b','c','a'])
+,b,c,a
+0,2,3.0,1
+1,6,,5
+2,10,11.0,9
+
+
+处理分隔符
 
 
 
