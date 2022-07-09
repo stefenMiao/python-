@@ -50,8 +50,18 @@ pd.read_csv('ex1.csv',names=['a','b','c','d','e'])  #names指定标题行内容
 2  9  10  11  12    foo
 
 
+index_col参数
+指定行索引为数据中的某一列
+pd.read_csv('ex1.csv',names=['a','b','c','d','e'],index_col='e')  #指定‘e'列作为行索引
+       a   b   c   d
+e                   
+hello  1   2   3   4
+world  5   6   7   8
+foo    9  10  11  12
 
-
+层次化索引
+传入
+层次化索引由列
 
 
 
