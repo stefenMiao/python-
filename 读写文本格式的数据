@@ -1,0 +1,70 @@
+输入输出操作分类
+1.读取文本文件和其他更高效的磁盘存储形式
+2.加载数据库中的数据
+3.利用Web API操作网络资源
+
+常用函数
+read_csv 从文件，URL，文件型对象中加载带分隔符的数据，默认分隔符为逗号
+read_table 从文件，URL，文件型对象中加载带分隔符的数据，默认分隔符为制表符
+
+函数选项分类
+索引：将一个或多个列当作返回的dataframe处理，以及是否从文件，用户获取列名
+类型推断和数据转换：包括用户定义值的转换，和自定义的缺失值标记列表
+日期解析：包括组合功能，比如将分散在多个列中的日期时间信息组合成结果中的单个列
+迭代：对大文件进行逐块迭代
+不规整数据问题：跳过一些行，页脚，注释或其他不重要的东西
+
+
+!cat ex1.csv  #终端中使用vim编辑csv文件
+a,b,c,d,message
+1,2,3,4,hello
+5,6,7,8,world
+9,10,11,12,foo
+
+df=pd.read_csv('ex1.csv')  #默认以逗号为分隔符，自动添加了index行索引
+df
+   a   b   c   d message
+0  1   2   3   4   hello
+1  5   6   7   8   world
+2  9  10  11  12     foo
+
+pd.read_table('ex1.csv',sep=',')   #指定分隔符为逗号
+   a   b   c   d message
+0  1   2   3   4   hello
+1  5   6   7   8   world
+2  9  10  11  12     foo
+
+
+读入没有标题行的文件
+可以让pandas为其分配默认的列名，或者自定义列名
+pd.read_csv('ex1.csv',header=None)   #header说明该文件没有标题行
+   0   1   2   3      4
+0  1   2   3   4  hello
+1  5   6   7   8  world
+2  9  10  11  12    foo
+
+pd.read_csv('ex1.csv',names=['a','b','c','d','e'])  #names指定标题行内容
+   a   b   c   d      e
+0  1   2   3   4  hello
+1  5   6   7   8  world
+2  9  10  11  12    foo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
