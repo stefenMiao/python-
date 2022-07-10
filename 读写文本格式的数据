@@ -183,8 +183,17 @@ data.to_csv(sys.stdout,columns=['b','c','a'])
 "1","2","3"
 "1","2","3"
 
+对于任何单字符分隔符文件，可以直接使用python内置的csv模块，将任意已打开的文件或文件型对象传给csv.reader
+f=open('ex2.csv')  #打开文件
+reader=csv.reader(f)  #读取文件
 
 
+reader是可迭代对象，迭代时为每行产生一个元组
+for line in reader:
+      print(line)
+['a', 'b', 'c']
+['1', '2', '3']
+['1', '2', '3']
 
 
 
