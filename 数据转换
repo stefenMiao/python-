@@ -1,0 +1,114 @@
+----------移除重复数据-----------
+df
+    k1  k2
+0  one   1
+1  two   1
+2  one   2
+3  two   3
+4  one   3
+5  two   4
+6  two   4
+
+duplicated方法
+判断该行是否重复（前面是否出现过）
+df.duplicated()
+0    False
+1    False
+2    False
+3    False
+4    False
+5    False
+6     True
+
+drop_duplicates方法
+返回移除重复行的dataframe
+df.drop_duplicates()
+    k1  k2
+0  one   1
+1  two   1
+2  one   2
+3  two   3
+4  one   3
+5  two   4
+
+这两种方法默认判断全部列，可以指定部分列进行判断
+df
+    k1  k2  v1
+0  one   1   0
+1  two   1   1
+2  one   2   2
+3  two   3   3
+4  one   3   4
+5  two   4   5
+6  two   4   6
+
+df.drop_duplicates(['k1'])   #只判断k1列是否有重复行 
+    k1  k2  v1
+0  one   1   0
+1  two   1   1
+
+keep参数
+当出现重复时默认保留第一个数据，keep='last'则保留最后一个数据
+df.drop_duplicates(['k1','k2'],keep='last')
+    k1  k2  v1
+0  one   1   0
+1  two   1   1
+2  one   2   2
+3  two   3   3
+4  one   3   4
+6  two   4   6  #保留了第六行而不是第五行
+
+
+----------利用函数或映射进行数据转换------------
+data
+          food  ounces
+0        bacon     4.0
+1  pulled pork     3.0
+2        bacon    12.0
+3     Pastrami     6.0
+4  corned beef     7.5
+5        Bacon     8.0
+6     pastrami     3.0
+7    honey ham     5.0
+8     nova lox     6.0
+要在data的基础上加入下列字典
+meat_to_animal = {
+'bacon': 'pig',
+'pulled pork': 'pig',
+'pastrami': 'cow',
+'corned beef': 'cow',
+'honey ham': 'pig',
+'nova lox': 'salmon'
+}
+由于food数据存在大小写杂糅，所以把它们全都转换为小写
+low=data['food'].str.lower()
+
+使用map方法组合字典与原数据
+data['animal']=low.map(meat_to_animal)
+          food  ounces  animal
+0        bacon     4.0     pig
+1  pulled pork     3.0     pig
+2        bacon    12.0     pig
+3     Pastrami     6.0     cow
+4  corned beef     7.5     cow
+5        Bacon     8.0     pig
+6     pastrami     3.0     cow
+7    honey ham     5.0     pig
+8     nova lox     6.0  salmon
+
+使用map是一种实现元素级转换以及其他数据清理工作的便捷方式
+
+
+------------替换值-------------
+
+
+
+
+
+
+
+
+
+
+
+
