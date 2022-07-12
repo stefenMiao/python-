@@ -1,0 +1,70 @@
+----------字符串对象方法-----------
+split方法
+通过指定分隔符，把字符串拆分成一组子串
+val='a,b,sun'
+val.split(',') 
+['a', 'b', 'sun']
+
+strip方法
+去除空白符（换行符）
+piece=[x.strip() for x in val.split(',')]
+['a', 'b', 'sun']
+
+以某一形式的分隔符连接起来
+'**'.join(piece)
+'a**b**sun'
+
+子串定位
+' sun' in val  #使用in关键字
+True
+'am' in val
+False
+
+val.index('b')  #使用index方法，若无法找到字符串，则抛出error
+2
+
+val.find('b')   #使用find方法，找不到字符串返回-1
+2
+val.find('e')
+-1
+
+replace方法
+将指定字符替换为另一字符（串）
+val.replace(',',':')
+'a:b:  sun'
+val.replace('a','')  #若替换的字符串为空，则相当于删除
+',b,  sun'
+
+
+-------------正则表达式-------------
+re模块包含三个大类：模式匹配，替换，以及拆分
+text = "foo bar\t baz \tqux"
+re.split('\s+',text)      #\s+匹配数量不定的空白字符
+['foo', 'bar', 'baz', 'qux']
+
+可以自己编译regex得到可重用的regex对象，方便后续反复使用
+regex=re.compile('\s+')   #使用compile函数进行编译
+regex.split(text)         #直接调用regex对象
+['foo', 'bar', 'baz', 'qux']
+
+
+------------pndas矢量化字符串函数--------------
+data
+Dave     dave@google.com
+Steve    steve@gmail.com
+Rob        rob@gmail.com
+Wes                  NaN
+
+str.contains方法
+字符串中是否含有某个子串
+data.str.contains('gmail')
+Dave     False
+Steve     True
+Rob       True
+Wes        NaN
+
+
+
+
+
+
