@@ -337,11 +337,27 @@ pd.get_dummies(df['key'])
 3  0  0  1
 4  1  0  0
 5  0  1  0
-分析：构建哑变量，
+分析：构建哑变量，对于data1，若key为a，则a的哑变量为1，同理若为b，c则相应的哑变量为1
 
+prefix参数
+在名称添加前缀
+dummies=pd.get_dummies(df['key'],prefix='key')
+   key_a  key_b  key_c
+0      0      1      0
+1      0      1      0
+2      1      0      0
+3      0      0      1
+4      1      0      0
+5      0      1      0
 
-
-
+dummies=pd.get_dummies(df['data1'],prefix='key')
+   key_0  key_1  key_2  key_3  key_4  key_5
+0      1      0      0      0      0      0
+1      0      1      0      0      0      0
+2      0      0      1      0      0      0
+3      0      0      0      1      0      0
+4      0      0      0      0      1      0
+5      0      0      0      0      0      1
 
 
 
