@@ -137,14 +137,73 @@ b    2        9  10       11
 
 ----------根据级别汇总统计-----------
 对dataframe和series的描述和汇总统计常有level选项，用于指定在某条轴上求和的级别
+frame.sum(level='key2')  #默认axis=0
+c1    Ohio     Colorado
+c2   Green Red    Green
+key2                   
+1        6   8       10
+2       12  14       16
+分析：对于key2每一个索引，对索引相同的值求sum
+
+frame.sum(level='c1',axis=1)
+c1         Ohio  Colorado
+key1 key2                
+a    1        1         2
+     2        7         5
+b    1       13         8
+     2       19        11
+
+-----------使用dataframe的列进行索引----------
+将dataframe的一个或者多个列当作行索引使用，或者将行索引变为dataframe的列
+set_index函数
+将其中一个或多个列转换为行索引，返回新的副本
+frame
+   a  b    c  d
+0  0  7  one  0
+1  1  6  one  1
+2  2  5  one  2
+3  3  4  two  0
+4  4  3  two  1
+5  5  2  two  2
+6  6  1  two  3
+
+frame
+Out[58]: 
+       a  b
+c   d      
+one 0  0  7
+    1  1  6
+    2  2  5
+two 0  3  4
+    1  4  3
+    2  5  2
+    3  6  1
+
+drop参数
+drop=False，保留想要转换为行索引的列
+frame2=frame.set_index(['c','d'],drop=False)
+       a  b    c  d
+c   d              
+one 0  0  7  one  0
+    1  1  6  one  1
+    2  2  5  one  2
+two 0  3  4  two  0
+    1  4  3  two  1
+    2  5  2  two  2
+    3  6  1  two  3
 
 
-
-
-
-
-
-
+reset_index()
+set_index的反函数，层次化索引的级别转移到列列里面
+frame.reset_index()
+   index  a  b    c  d
+0      0  0  7  one  0
+1      1  1  6  one  1
+2      2  2  5  one  2
+3      3  3  4  two  0
+4      4  4  3  two  1
+5      5  5  2  two  2
+6      6  6  1  two  3
 
 
 
