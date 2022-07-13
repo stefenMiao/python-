@@ -1,0 +1,152 @@
+层次化索引能够在一个轴上拥有多个索引级别，使你能够在低纬度处理高纬度数据
+data = pd.Series(np.random.randn(9),
+    index=[['a', 'a', 'a', 'b', 'b', 'c', 'c', 'd', 'd'],
+           [1, 2, 3, 1, 3, 1, 2, 2, 3]])
+
+ data
+a  1    0.299899
+   2    1.214703
+   3    0.034937
+b  1    0.583872
+   3   -1.459670
+c  1    0.215664
+   2   -1.230114
+d  2   -0.354812
+   3   -1.042403
+   
+data.index
+MultiIndex([('a', 1),   #可以看出是层次化索引
+            ('a', 2),
+            ('a', 3),
+            ('b', 1),
+            ('b', 3),
+            ('c', 1),
+            ('c', 2),
+            ('d', 2),
+            ('d', 3)],
+           )
+
+可以使用部分索引选取数据子集
+data['a']
+1    0.299899
+2    1.214703
+3    0.034937
+
+data['a':'c']
+a  1    0.299899
+   2    1.214703
+   3    0.034937
+b  1    0.583872
+   3   -1.459670
+c  1    0.215664
+   2   -1.230114
+   
+data.loc[['a','d']]
+a  1    0.299899
+   2    1.214703
+   3    0.034937
+d  2   -0.354812
+   3   -1.042403  
+  
+data.loc[:,2]  #也可以在内层提取 
+a    1.214703
+c   -1.230114
+d   -0.354812
+
+unstack方法
+将层次化的series重新安排在dataframe中
+data.unstack()
+          1         2         3
+a  0.299899  1.214703  0.034937
+b  0.583872       NaN -1.459670
+c  0.215664 -1.230114       NaN
+d       NaN -0.354812 -1.042403
+  
+它的逆方法是stack
+data==data.unstack().stack()
+
+对于dataframe，每个轴都能有分层索引
+frame = pd.DataFrame(np.arange(12).reshape((4, 3)),
+     index=[['a', 'a', 'b', 'b'], [1, 2, 1, 2]],
+     columns=[['Ohio', 'Ohio', 'Colorado'],
+              ['Green', 'Red', 'Green']])
+
+frame
+     Ohio     Colorado
+    Green Red    Green
+a 1     0   1        2
+  2     3   4        5
+b 1     6   7        8
+  2     9  10       11
+  
+每一层都能有自己的名字
+frame.index.names=['key1','key2']
+frame.columns.names=['c1','c2']
+
+frame
+c1         Ohio     Colorado
+c2        Green Red    Green
+key1 key2                   
+a    1        0   1        2
+     2        3   4        5
+b    1        6   7        8
+     2        9  10       11
+
+可以由列索引选取列分组
+frame['Ohio']
+c2         Green  Red
+key1 key2            
+a    1         0    1
+     2         3    4
+b    1         6    7
+     2         9   10
+
+
+-------------重排与分级排序-------------
+swaplevel方法
+接受两个级别编号或名称，返回互换级别的对象
+frame.swaplevel('key1','key2')   #默认在axis=0轴
+c1         Ohio     Colorado
+c2        Green Red    Green
+key2 key1                   
+1    a        0   1        2
+2    a        3   4        5
+1    b        6   7        8
+2    b        9  10       11
+
+frame.swaplevel('c1','c2',axis=1)
+c2        Green  Red    Green
+c1         Ohio Ohio Colorado
+key1 key2                    
+a    1        0    1        2
+     2        3    4        5
+b    1        6    7        8
+     2        9   10       11
+
+sort_index方法
+可以指定级别进行排序
+frame.sort_index(level=1)
+c1         Ohio     Colorado
+c2        Green Red    Green
+key1 key2                   
+a    1        0   1        2
+b    1        6   7        8
+a    2        3   4        5
+b    2        9  10       11
+
+
+----------根据级别汇总统计-----------
+对dataframe和series的描述和汇总统计常有level选项，用于指定在某条轴上求和的级别
+
+
+
+
+
+
+
+
+
+
+
+
+
