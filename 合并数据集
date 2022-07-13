@@ -1,0 +1,220 @@
+pandas.merge--可根据一个或多个键将不同dataframe的行连接起来，与数据库中的join操作类似
+pandas.concat--可以沿着一条轴将多个对象堆叠到一起
+combine_first--将重复数据拼接在一起，用一个对象的值填充另一个对象中的缺失值
+
+-----------数据库风格的dataframe合并-----------
+数据集的合并（merge）或连接（join）运算是通过一个或多个键将行连接起来的，这些运算是关系型数据库的核心
+pd.merge(df1,df2)  #如果没有指定用哪个列合并，则merge会将重叠的列的列名当作键
+  key  data1  data2
+0   b      0      1
+1   b      1      1
+2   b      6      1
+3   a      2      0
+4   a      4      0
+5   a      5      0
+
+pd.merge(df1,df2,on='key')  #指定想要合并的列
+
+两个对象列名不同
+df3
+  lkey  data1
+0    b      0
+1    b      1
+2    a      2
+3    c      3
+4    a      4
+5    a      5
+6    b      6
+
+df4
+  rkey  data2
+0    a      0
+1    b      1
+2    d      2
+
+pd.merge(df3,df4,left_on='lkey',right_on='rkey')
+  lkey  data1 rkey  data2
+0    b      0    b      1
+1    b      1    b      1
+2    b      6    b      1
+3    a      2    a      0
+4    a      4    a      0
+5    a      5    a      0
+默认情况下是做内连接inner，结果中的键是交集
+
+外连接，结果是并集
+pd.merge(df3,df4,left_on='lkey',right_on='rkey',how='outer')
+  lkey  data1 rkey  data2
+0    b    0.0    b    1.0
+1    b    1.0    b    1.0
+2    b    6.0    b    1.0
+3    a    2.0    a    0.0
+4    a    4.0    a    0.0
+5    a    5.0    a    0.0
+6    c    3.0  NaN    NaN
+7  NaN    NaN    d    2.0
+
+
+根据多个键合并
+left
+  key1 key2  lval
+0  foo  one     1
+1  foo  two     2
+2  bar  one     3
+
+right
+  key1 key2  rval
+0  foo  one     4
+1  foo  one     5
+2  bar  one     6
+3  bar  two     7
+
+pd.merge(left,right,on=['key1','key2'],how='outer')
+  key1 key2  lval  rval
+0  foo  one   1.0   4.0
+1  foo  one   1.0   5.0
+2  foo  two   2.0   NaN
+3  bar  one   3.0   6.0
+4  bar  two   NaN   7.0
+
+
+suffixes参数
+在重复列名添加自定义的后缀
+pd.merge(left,right,on='key1')
+  key1 key2_x  lval key2_y  rval
+0  foo    one     1    one     4
+1  foo    one     1    one     5
+2  foo    two     2    one     4
+3  foo    two     2    one     5
+4  bar    one     3    one     6
+5  bar    one     3    two     7
+
+pd.merge(left,right,on='key1',suffixes=['_left','_right'])
+  key1 key2_left  lval key2_right  rval
+0  foo       one     1        one     4
+1  foo       one     1        one     5
+2  foo       two     2        one     4
+3  foo       two     2        one     5
+4  bar       one     3        one     6
+5  bar       one     3        two     7
+
+
+-------------索引上的合并--------------
+若连接键位于其索引中，，可以传入left_index=True或者right_index=True说明索引应该被用作连接键
+left1
+  key  value
+0   a      0
+1   b      1
+2   a      2
+3   a      3
+4   b      4
+5   c      5
+
+right1
+   group_val
+a        3.5
+b        7.0
+
+pd.merge(left1,right1,left_on='key',right_index=True)  #表明右边的索引应该被用作连接键
+  key  value  group_val
+0   a      0        3.5
+2   a      2        3.5
+3   a      3        3.5
+1   b      1        7.0
+4   b      4        7.0
+
+
+join方法
+可以用于合并多个带有相同或相似索引的dataframe对象，要求没有重叠的列
+right2  #
+   Missouri  Alabama
+b       7.0      8.0
+c       9.0     10.0
+d      11.0     12.0
+e      13.0     14.0
+
+left2
+   Ohio  Nevada
+a   1.0     2.0
+c   3.0     4.0
+e   5.0     6.0
+
+left2.join(right2,how='outer')
+   Ohio  Nevada  Missouri  Alabama
+a   1.0     2.0       NaN      NaN
+b   NaN     NaN       7.0      8.0
+c   3.0     4.0       9.0     10.0
+d   NaN     NaN      11.0     12.0
+e   5.0     6.0      13.0     14.0
+
+join方法默认使用左连接，支持在调用的dataframe的列上，连接传递的dataframe索引
+left1.join(right1,on='key')
+  key  value  group_val
+0   a      0        3.5
+1   b      1        7.0
+2   a      2        3.5
+3   a      3        3.5
+4   b      4        7.0
+5   c      5        NaN
+
+
+------------轴向连接------------
+numpy中的concatenate函数
+arr
+array([[ 0,  1,  2,  3,  4],
+       [ 5,  6,  7,  8,  9],
+       [10, 11, 12, 13, 14]])
+
+np.concatenate([arr,arr],axis=1)
+array([[ 0,  1,  2,  3,  4,  0,  1,  2,  3,  4],
+       [ 5,  6,  7,  8,  9,  5,  6,  7,  8,  9],
+       [10, 11, 12, 13, 14, 10, 11, 12, 13, 14]])
+
+pandas中的concat函数
+s1 = pd.Series([0, 1], index=['a', 'b'])
+s2 = pd.Series([2, 3, 4], index=['c', 'd', 'e'])
+s3 = pd.Series([5, 6], index=['f', 'g'])
+pd.concat([s1,s2,s3])
+a    0
+b    1
+c    2
+d    3
+e    4
+f    5
+g    6
+默认情况下在axis=0上工作，产生一个series，若传入axis=1则产生一个dataframe
+pd.concat([s1,s2,s3],axis=1)
+     0    1    2
+a  0.0  NaN  NaN
+b  1.0  NaN  NaN
+c  NaN  2.0  NaN
+d  NaN  3.0  NaN
+e  NaN  4.0  NaN
+f  NaN  NaN  5.0
+g  NaN  NaN  6.0
+
+join='inner'参数，得到交集
+s4
+a    0
+b    1
+f    5
+g    6
+
+pd.concat([s1,s4],axis=1,join='inner')
+   0  1
+a  0  0
+b  1  1
+
+join_axes参数
+指定在其他轴上使用的索引
+
+
+
+
+
+
+
+
+
+
+
