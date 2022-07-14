@@ -1,0 +1,118 @@
+---------重塑层次化索引---------
+stack:将数据的列“旋转”为行
+unstack:将数据的行“旋转”为列
+
+
+stack方法
+data
+number    one  two  three
+state                    
+Ohio        0    1      2
+Colorado    3    4      5
+
+data.stack()  #变为了层次化索引，得到一个series
+state     number
+Ohio      one       0
+          two       1
+          three     2
+Colorado  one       3
+          two       4
+          three     5
+
+
+unstack方法
+对于一个层次化索引的series，可以用unstack重排为dataframe
+data.stack().unstack()
+number    one  two  three
+state                    
+Ohio        0    1      2
+Colorado    3    4      5
+          
+默认情况下这两种方法操作的是最内层
+传入分层级别的编号或名称可以对其他级别进行操作
+result.unstack(0)
+state   Ohio  Colorado
+number                
+one        0         3
+two        1         4
+three      2         5
+
+result.unstack(1)
+number    one  two  three
+state                    
+Ohio        0    1      2
+Colorado    3    4      5
+
+result.unstack('state')
+state   Ohio  Colorado
+number                
+one        0         3
+two        1         4
+three      2         5
+
+若不是所有级别值都能在各分组中找到，则unstack会引入缺失数据
+data2
+one  a    0
+     b    1
+     c    2
+     d    3
+two  c    4
+     d    5
+     e    6
+
+data2.unstack()
+       a    b    c    d    e
+one  0.0  1.0  2.0  3.0  NaN
+two  NaN  NaN  4.0  5.0  6.0
+
+stack会默认过滤缺失数据，所以该操作是可逆的
+若不想忽略缺失值，则传入dropna参数
+data2.unstack().stack(dropna=False)
+one  a    0.0
+     b    1.0
+     c    2.0
+     d    3.0
+     e    NaN
+two  a    NaN
+     b    NaN
+     c    4.0
+     d    5.0
+     e    6.0
+
+对dataframe进行unstack操作时，作为旋转轴的级别会成为结果中的最低级别
+df.unstack('state')
+side   left          right         
+state  Ohio Colorado  Ohio Colorado
+number                             
+one       0        3     5        8
+two       1        4     6        9
+three     2        5     7       10
+
+df.unstack('number')
+side     left           right          
+number    one two three   one two three
+state                                  
+Ohio        0   1     2     5   6     7
+Colorado    3   4     5     8   9    10
+
+
+-----------长格式旋转为宽格式-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
