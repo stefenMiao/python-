@@ -1,0 +1,62 @@
+Matplotlib对象简介
+   FigureCanvas  画布
+   Figure        图
+   Axes          坐标轴(实际画图的地方)
+
+-----------Figure和Subplot----------
+matplotlib的图像都位于figure对象中
+创建新的figure
+fig=plt.figure()
+
+add_subplot方法
+返回axes
+不能通过空的figure绘图，必须通过该方法创建一个或多个subplot
+ax1=fig.add_subplot(2,2,1) #图像应该是2*2的（最多四张图），当前选中的是四个subplot中的第一个
+
+直接执行画图命令，则会在最后一个用过的subplot上进行绘制，隐藏创建figure和subplot的过程
+
+
+------------调整subplot周围的间距------------
+默认情况下会在subplot外围会留下一定的边距
+subplots_adjust方法
+subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=None, hspace=None)
+Parameters
+left(float, optional)
+    The position of the left edge of the subplots, as a fraction of the figure width.
+right(float, optional)
+    The position of the right edge of the subplots, as a fraction of the figure width.
+bottom(float, optional)
+    The position of the bottom edge of the subplots, as a fraction of the figure height.
+top(float, optional)
+    The position of the top edge of the subplots, as a fraction of the figure height.
+wspace(float, optional)
+    The width of the padding between subplots, as a fraction of the average Axes width.
+hspace(float, optional)
+    The height of the padding between subplots, as a fraction of the average Axes height.
+
+
+-----------颜色，标记和线型-----------
+plot函数
+不仅能接受一组x和y坐标，还可以接受一个表示颜色和线型的字符串缩写
+ax.plot(x,y,'g--') #根据xy绘制绿色虚线
+
+标记强调数据点
+标记可以放到格式字符串中，但标记类型和线型必须放在颜色后面
+plt.plot(np.random.randn(30).cumsum(),'ko--')
+等价于
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
