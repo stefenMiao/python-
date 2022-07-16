@@ -43,11 +43,30 @@ ax.plot(x,y,'g--') #根据xy绘制绿色虚线
 标记强调数据点
 标记可以放到格式字符串中，但标记类型和线型必须放在颜色后面
 plt.plot(np.random.randn(30).cumsum(),'ko--')
-等价于
+等价于plt.plot(np.random.randn(30).cumsum(),color='k',linestyle='dashed',marker='o')
 
 
+----------刻度，标签和图例----------
+设置标题、轴标签、刻度以及刻度标签
+fig=plt.figure()
+ax=fig.add_subplot(1,1,1)
+ax.plot(np.random.randn(1000).cumsum())
+ax.set_xticks([0, 250, 500, 750, 1000])  #设置轴刻度  
+ax.set_xticklabels(['one', 'two', 'three', 'four', 'five'],rotation=45,fontsize='small')  #设置刻度标签
+ax.set_title('Figure')  #设置图片标题
+ax.set_xlabel('stage')  #设置x轴标签
+
+添加图例
+fig=plt.figure()
+ax=fig.add_subplot(1,1,1)
+ax.plot(np.random.randn(1000).cumsum(),'k',label='one')
+ax.plot(np.random.randn(1000).cumsum(),'b--',label='two')
+ax.plot(np.random.randn(1000).cumsum(),'g.',label='three')
+ax.legend(loc='best')  #自动选择最佳位置放置图例
 
 
+----------注释以及在subplot上绘图----------
+text方法
 
 
 
